@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4d2e">
+<meta name="description" content="Registro de campo de árboles asociados a luminarias, funciona sin internet.">
+<title>Bitácora Forestal · Campo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img src="icon-192.png" alt="" width="34" height="34">
+    <div><strong>Bitácora Forestal</strong><span>Trabajo de campo</span></div>
+  </div>
+  <div class="pills">
+    <span id="netPill" class="pill">…</span>
+    <span id="readyPill" class="pill">…</span>
+  </div>
+</header>
+<div id="updateBar" class="bar" hidden>Hay una versión nueva de la aplicación. <button id="btnUpdate" class="btn small">Actualizar</button><small>Sus registros no se modifican.</small></div>
+<div id="storageBar" class="bar warn" hidden></div>
+
+<main>
+  <!-- ============ REGISTROS ============ -->
+  <section id="view-list" class="view">
+    <div class="summary" id="summary"></div>
+    <div class="searchrow">
+      <input id="q" type="search" placeholder="Buscar luminaria, árbol, especie, N.º…" autocomplete="off">
+    </div>
+    <div class="chips" id="filters">
+      <button class="chip on" data-f="all">Todos</button>
+      <button class="chip" data-f="pend">Coordenadas pendientes</button>
+      <button class="chip" data-f="nophoto">Sin fotos</button>
+      <button class="chip" data-f="today">Hoy</button>
+    </div>
+    <ul id="list" class="list"></ul>
+    <p id="empty" class="empty" hidden>Aún no hay registros. Toque <b>Nuevo</b> para empezar.</p>
+  </section>
+
+  <!-- ============ FORMULARIO ============ -->
+  <section id="view-form" class="view" hidden>
+    <form id="form" novalidate autocomplete="off">
+      <div class="formhead">
+        <h2 id="formTitle">Nuevo registro</h2>
+        <span id="formConsec" class="mono"></span>
+      </div>
+
+      <fieldset>
+        <legend>Identificación</legend>
+        <label>Código de luminaria *<input name="luminaria" required inputmode="text" autocapitalize="characters"></label>
+        <p id="dupInfo" class="hint" hidden></p>
+        <div class="grid2">
+          <label>ID árbol<input name="arbolId" autocapitalize="characters"></label>
+          <label>Responsable<input name="responsable"></label>
+        </div>
+      </fieldset>
+
+      <fieldset id="locBox">
+        <legend>Ubicación (WGS84)</legend>
+        <div class="gpsrow">
+          <button type="button" id="btnGps" class="btn primary">📍 Obtener ubicación actual</button>
+          <button type="button" id="btnGpsStop" class="btn" hidden>Usar la mejor lectura</button>
+        </div>
+        <div id="gpsLive" class="gpslive" hidden></div>
+        <div class="grid2">
+          <label>Latitud<input name="lat" inputmode="decimal" placeholder="ej. 2.927300"></label>
+          <label>Longitud<input name="lon" inputmode="decimal" placeholder="ej. -75.281900"></label>
+        </div>
+        <div id="coordState" class="coordstate"></div>
+        <p class="hint">Puede escribir las coordenadas a mano (grados decimales). Si las deja vacías, el registro se guarda con <b>coordenadas pendientes</b> y puede completarlas después. La precisión depende del celular y de la señal: no es un levantamiento topográfico.</p>
+        <button type="button" id="btnClearCoord" class="btn small ghost">Borrar coordenadas de este registro</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Especie y dasometría</legend>
+        <div class="grid2">
+          <label>Nombre común<input name="especieComun" list="dlComun"></label>
+          <label>Nombre científico<input name="especieCientifica" list="dlCient"></label>
+        </div>
+        <div class="grid3">
+          <label>CAP (cm)<input name="cap" inputmode="decimal"></label>
+          <label>DAP (cm)<input name="dap" inputmode="decimal" placeholder="auto"></label>
+          <label>Altura total (m)<input name="altura" inputmode="decimal"></label>
+          <label>Altura fuste (m)<input name="alturaFuste" inputmode="decimal"></label>
+          <label>Diám. copa (m)<input name="diametroCopa" inputmode="decimal"></label>
+        </div>
+        <p class="hint">Si escribe el CAP, el DAP se calcula (CAP ÷ π) y puede corregirlo.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Estado y manejo</legend>
+        <label>Estado fitosanitario
+          <select name="estado"><option></option><option>Bueno</option><option>Regular</option><option>Malo</option><option>Muerto</option></select></label>
+        <label>Interferencia con la luminaria
+          <select name="interferencia"><option></option><option>Ninguna</option><option>Leve</option><option>Moderada</option><option>Severa (obstruye la iluminación)</option><option>Contacto con redes</option></select></label>
+        <label>Tratamiento recomendado
+          <select name="tratamiento"><option></option><option>Ninguno</option><option>Poda de despeje</option><option>Poda de formación</option><option>Poda sanitaria</option><option>Poda de realce</option><option>Tala</option><option>Requiere evaluación</option></select></label>
+        <label>Emplazamiento
+          <select name="emplazamiento"><option></option><option>Andén</option><option>Separador</option><option>Zona verde</option><option>Parque</option><option>Predio privado</option><option>Rural</option><option>Otro</option></select></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dirección</legend>
+        <div class="grid2">
+          <label>Comuna<input name="comuna"></label>
+          <label>Barrio / vereda<input name="barrio"></label>
+        </div>
+        <label>Dirección / referencia<input name="direccion"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Fotografías</legend>
+        <div class="gpsrow">
+          <label class="btn primary filebtn">📷 Tomar foto<input id="camIn" type="file" accept="image/*" capture="environment" hidden></label>
+          <label class="btn filebtn">🖼️ Elegir de la galería<input id="galIn" type="file" accept="image/*" multiple hidden></label>
+        </div>
+        <div id="thumbs" class="thumbs"></div>
+        <p id="photoMsg" class="hint"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Observaciones</legend>
+        <textarea name="observaciones" rows="3"></textarea>
+      </fieldset>
+
+      <div class="formactions">
+        <button type="submit" id="btnSave" class="btn primary big">Guardar registro</button>
+        <button type="button" id="btnCancel" class="btn">Cancelar</button>
+        <button type="button" id="btnDelete" class="btn danger" hidden>Eliminar</button>
+      </div>
+      <p class="hint center" id="draftInfo">Lo que escriba se guarda como borrador en el dispositivo mientras termina.</p>
+    </form>
+  </section>
+
+  <!-- ============ EXPORTAR ============ -->
+  <section id="view-export" class="view" hidden>
+    <h2>Exportar trabajo de campo</h2>
+    <p class="hint">Todo se genera en este dispositivo, sin internet. Exportar <b>no borra ni modifica</b> los registros.</p>
+    <div id="exportCheck" class="card"></div>
+    <div class="exportgrid">
+      <button class="btn big" data-exp="xlsx">📊 Excel (.xlsx)<small>Registros y hoja de fotos</small></button>
+      <button class="btn big" data-exp="csv-es">📄 CSV para Excel en español<small>Separador «;» y coma decimal</small></button>
+      <button class="btn big" data-exp="csv">📄 CSV estándar<small>Coma y punto decimal (SIG, QGIS)</small></button>
+      <button class="btn big" data-exp="kmz">🌎 KMZ para Google Earth<small><label class="inline"><input type="checkbox" id="kmzPhotos" checked> incluir fotos</label></small></button>
+      <button class="btn big" data-exp="zip">🗂️ ZIP de fotografías<small>Carpeta de fotos + tabla de relación</small></button>
+    </div>
+    <div id="exportLog" class="log"></div>
+  </section>
+
+  <!-- ============ RESPALDO / AJUSTES ============ -->
+  <section id="view-backup" class="view" hidden>
+    <h2>Copias de seguridad</h2>
+    <div class="card">
+      <p id="lastBackup" class="hint"></p>
+      <button id="btnBackup" class="btn primary big">💾 Crear copia de seguridad</button>
+      <p class="hint">Genera un archivo .zip con todos los registros y fotografías. Guárdelo fuera del celular (computador, memoria USB, correo o nube cuando tenga conexión).</p>
+      <label class="btn big filebtn">♻️ Restaurar desde copia<input id="restoreIn" type="file" accept=".zip,application/zip" hidden></label>
+      <p class="hint">Restaurar <b>no borra nada</b>: agrega los registros que falten y actualiza los que en la copia sean más recientes.</p>
+    </div>
+
+    <h2>Almacenamiento</h2>
+    <div class="card">
+      <p id="storageInfo">…</p>
+      <button id="btnPersist" class="btn small">Proteger datos contra borrado automático</button>
+    </div>
+
+    <h2>Modo sin conexión</h2>
+    <div class="card">
+      <p id="offlineInfo">…</p>
+      <button id="btnCheckOffline" class="btn small">Verificar preparación</button>
+    </div>
+
+    <h2>Ajustes</h2>
+    <div class="card">
+      <label>Código de brigada / dispositivo (prefijo del N.º de registro)<input id="setBrigada" maxlength="8" autocapitalize="characters"></label>
+      <label>Responsable por defecto<input id="setResp"></label>
+      <label class="inline"><input type="checkbox" id="setResize"> Reducir fotos a 1920 px (ahorra espacio)</label>
+      <button id="btnSaveSettings" class="btn small">Guardar ajustes</button>
+    </div>
+
+    <h2>Papelera</h2>
+    <div class="card">
+      <p class="hint">Los registros eliminados quedan aquí y se pueden recuperar. Solo desde aquí se borran definitivamente.</p>
+      <ul id="trash" class="list"></ul>
+    </div>
+    <p class="hint center" id="version"></p>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button data-view="list" class="on">📋<span>Registros</span></button>
+  <button data-view="form" id="tabNew">➕<span>Nuevo</span></button>
+  <button data-view="export">⬇️<span>Exportar</span></button>
+  <button data-view="backup">💾<span>Respaldo</span></button>
+</nav>
+
+<dialog id="dlg"><form method="dialog"><h3 id="dlgTitle"></h3><div id="dlgBody"></div><div id="dlgBtns" class="dlgbtns"></div></form></dialog>
+<dialog id="viewer" class="viewer"><img id="viewerImg" alt="Fotografía"><form method="dialog"><button class="btn">Cerrar</button></form></dialog>
+<div id="toast" class="toast" hidden></div>
+
+<datalist id="dlComun"></datalist>
+<datalist id="dlCient"></datalist>
+
+<script src="zip.js"></script>
+<script src="db.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
