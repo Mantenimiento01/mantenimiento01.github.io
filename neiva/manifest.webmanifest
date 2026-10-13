@@ -1,0 +1,27 @@
+{
+ "id": "./",
+ "name": "Podas Neiva",
+ "short_name": "Podas Neiva",
+ "lang": "es-CO",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#1E6B3A",
+ "description": "Registro de campo forestal. Funciona sin internet.",
+ "icons": [
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
