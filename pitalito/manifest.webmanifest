@@ -1,0 +1,27 @@
+{
+ "id": "./",
+ "name": "Podas Pitalito",
+ "short_name": "Podas Pitalito",
+ "lang": "es-CO",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#1F5F8B",
+ "description": "Registro de campo forestal. Funciona sin internet.",
+ "icons": [
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
