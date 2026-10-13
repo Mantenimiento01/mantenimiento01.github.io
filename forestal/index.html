@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4d2e">
+<title>Forestal</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="stylesheet" href="app.css">
+<style>:root{--brand:#1f4d2e}</style>
+<script>window.APP={"mode": "admin"};</script>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><button id="homeBtn" class="back" type="button" aria-label="Volver al inicio" hidden>‹</button><img src="icon.png" alt="" width="36" height="36"><div><strong id="ctxTitle">Forestal</strong><span id="ctxSub"></span></div></div>
+  <div class="pills"><button id="cuadPill" class="pill cuad" type="button">…</button><span id="netPill" class="pill">…</span><span id="readyPill" class="pill">…</span></div>
+</header>
+<div id="updateBar" class="bar" hidden>Hay una versión nueva. <button id="btnUpdate" class="btn small">Actualizar</button><small>Sus registros no se tocan.</small></div>
+<div id="storageBar" class="bar warn" hidden>⚠️ Almacenamiento casi lleno: exporte, haga copia y libere espacio en el celular.</div>
+
+<main>
+<!-- INICIO (solo app Forestal) -->
+<section id="v-home" class="view" hidden>
+  <div id="homeBox"></div>
+  <div class="card homeextra">
+    <label class="btn big filebtn">🔗 Unir copias de cuadrillas<small>Archivos «Copia_Podas_…zip» que le envían</small><input id="homeRestore" type="file" accept=".zip,application/zip" multiple hidden></label>
+    <button id="homeLegacy" class="btn small" type="button">Traer datos de versiones anteriores en este celular</button>
+  </div>
+</section>
+
+<!-- LISTA -->
+<section id="v-list" class="view" hidden>
+  <div id="summary" class="summary"></div>
+  <input id="q" type="search" placeholder="Buscar código, especie o cuadrilla…" autocomplete="off">
+  <div class="chiprow" id="filters">
+    <button class="chip on" data-f="all">Todos</button><button class="chip" data-f="pend">Pendientes</button>
+    <button class="chip" data-f="mes">Este mes</button><button class="chip" data-f="hoy">Hoy</button>
+  </div>
+  <ul id="list" class="list"></ul>
+  <p id="empty" class="empty" hidden>Aún no hay registros aquí.<br>Toque <b>➕ Nuevo</b> para empezar.</p>
+</section>
+
+<!-- FORMULARIO -->
+<section id="v-form" class="view" hidden>
+<form id="form" novalidate autocomplete="off">
+  <div class="fhead"><h2 id="formTitle">Nuevo</h2><span id="formNum" class="mono"></span></div>
+  <div id="formBody"></div>
+  <div class="actions">
+    <button type="submit" id="btnSave" class="btn primary big">Guardar</button>
+    <button type="button" id="btnCancel" class="btn">Cancelar</button>
+    <button type="button" id="btnDelete" class="btn danger" hidden>Eliminar</button>
+  </div>
+</form>
+</section>
+
+<!-- EXPORTAR -->
+<section id="v-export" class="view" hidden>
+  <h2 id="expTitle">Exportar</h2>
+  <div class="card">
+    <div class="g2">
+      <div><label class="lbl">Mes</label><select id="expMes"></select></div>
+      <div id="cuadSel"><label class="lbl">Cuadrilla</label><select id="expCuad"></select></div>
+    </div>
+    <p id="expInfo" class="info2"></p>
+  </div>
+  <button class="btn primary big" data-exp="xlsx">📊 Excel con fotos<small>Fotos visibles en cada fila + hoja Resumen</small></button>
+  <button class="btn big" data-exp="kmz">🌎 KMZ para Google Earth<small>Puntos con datos y fotos</small></button>
+  <button class="btn big" data-exp="zip">🗂️ Fotos originales (ZIP)<small>Tamaño completo, nombradas por código</small></button>
+  <p id="expStatus" class="hint center"></p>
+  <div id="exportLog" class="log"></div>
+  <p class="hint">Exportar no borra nada. Los archivos quedan en <b>Descargas</b>; con «Compartir» los envía por WhatsApp o correo.</p>
+</section>
+
+<!-- COPIA -->
+<section id="v-backup" class="view" hidden>
+  <h2>Copia de seguridad</h2>
+  <div class="card">
+    <p id="lastBackup" class="hint"></p>
+    <button id="btnBackup" class="btn primary big">💾 Crear copia de seguridad</button>
+    <div id="backupLog" class="log"></div>
+    <p class="hint">Incluye todo: inventario y podas de todos los municipios, con fotos. Guárdela fuera del celular.</p>
+    <label class="btn big filebtn">🔗 Unir copias de cuadrillas o restaurar<small>Copias «Copia_Podas_…zip» de las cuadrillas o un respaldo suyo</small><input id="restoreIn" type="file" accept=".zip,application/zip" multiple hidden></label>
+    <p class="hint">Unir no borra nada: agrega lo que falta y actualiza lo más reciente.</p>
+    <div id="importLegacyBox"><button id="btnLegacy" class="btn small" type="button">Traer datos de versiones anteriores en este celular</button></div>
+  </div>
+  <h2>Sus datos</h2>
+  <div class="card">
+    <label class="lbl">Nombre corto o equipo</label><input id="setCuad" maxlength="20">
+    <label class="lbl">Responsable</label><input id="setResp">
+    <button id="btnSaveSet" class="btn small">Guardar</button>
+  </div>
+  <h2>Celular</h2>
+  <div class="card"><p id="storageInfo" class="hint"></p><button id="btnPersist" class="btn small">Proteger datos</button><p id="offlineInfo" class="hint"></p></div>
+  <h2>Papelera</h2>
+  <div class="card"><ul id="trash" class="list"></ul></div>
+  <p id="version" class="hint center"></p>
+</section>
+</main>
+
+<nav class="tabs" hidden>
+  <button data-view="list" class="on">📋<span>Registros</span></button>
+  <button data-view="form">➕<span id="tabNewLabel">Nuevo</span></button>
+  <button data-view="export">📊<span>Exportar</span></button>
+  <button data-view="backup">💾<span>Copia</span></button>
+</nav>
+
+<dialog id="dlg"><form method="dialog"><h3 id="dlgTitle"></h3><div id="dlgBody"></div><div id="dlgBtns" class="dlgbtns"></div></form></dialog>
+<div id="toast" class="toast" hidden></div>
+<datalist id="dlComun"></datalist><datalist id="dlSci"></datalist>
+<script src="app.js"></script>
+</body>
+</html>

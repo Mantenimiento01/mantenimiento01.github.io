@@ -1,0 +1,27 @@
+{
+ "id": "./",
+ "name": "Forestal · Inventario y Podas",
+ "short_name": "Forestal",
+ "lang": "es-CO",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#1f4d2e",
+ "description": "Registro de campo forestal. Funciona sin internet.",
+ "icons": [
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
