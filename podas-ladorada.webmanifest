@@ -1,0 +1,27 @@
+{
+ "id": "podas-ladorada",
+ "name": "Podas mensual La Dorada",
+ "short_name": "Podas La Dorada",
+ "description": "Registro de podas mensuales en La Dorada. Funciona sin internet.",
+ "lang": "es-CO",
+ "start_url": "podas-ladorada.html",
+ "scope": "podas-ladorada",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#B4532A",
+ "icons": [
+  {
+   "src": "podas-ladorada.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "podas-ladorada.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "id": "podas-pitalito",
+ "name": "Podas mensual Pitalito",
+ "short_name": "Podas Pitalito",
+ "description": "Registro de podas mensuales en Pitalito. Funciona sin internet.",
+ "lang": "es-CO",
+ "start_url": "podas-pitalito.html",
+ "scope": "podas-pitalito",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#1F5F8B",
+ "icons": [
+  {
+   "src": "podas-pitalito.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "podas-pitalito.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

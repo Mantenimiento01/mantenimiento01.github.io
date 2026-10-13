@@ -1,0 +1,27 @@
+{
+ "id": "podas-neiva",
+ "name": "Podas mensual Neiva",
+ "short_name": "Podas Neiva",
+ "description": "Registro de podas mensuales en Neiva. Funciona sin internet.",
+ "lang": "es-CO",
+ "start_url": "podas-neiva.html",
+ "scope": "podas-neiva",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f3f1ea",
+ "theme_color": "#1E6B3A",
+ "icons": [
+  {
+   "src": "podas-neiva.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "podas-neiva.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

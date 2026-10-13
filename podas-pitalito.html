@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F5F8B">
+<title>Podas Pitalito</title>
+<link rel="manifest" href="podas-pitalito.webmanifest">
+<link rel="icon" href="podas-pitalito.png">
+<link rel="apple-touch-icon" href="podas-pitalito.png">
+<link rel="stylesheet" href="podas-app.css">
+<style>:root{--brand:#1F5F8B;--brand2:#174a6d}</style>
+<script>window.PODAS={slug:'pitalito',ciudad:'Pitalito',color:'#1F5F8B'};</script>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img src="podas-pitalito.png" alt="" width="36" height="36"><div><strong>Podas mensual</strong><span>PITALITO</span></div></div>
+  <div class="pills"><button id="cuadPill" class="pill cuad" type="button">…</button><span id="netPill" class="pill">…</span><span id="readyPill" class="pill">…</span></div>
+</header>
+<div id="updateBar" class="bar" hidden>Hay una versión nueva. <button id="btnUpdate" class="btn small">Actualizar</button><small>Sus registros no se tocan.</small></div>
+<div id="storageBar" class="bar warn" hidden>⚠️ Almacenamiento casi lleno: exporte, haga copia y libere espacio en el celular.</div>
+
+<main>
+<!-- LISTA -->
+<section id="v-list" class="view">
+  <div id="summary" class="summary"></div>
+  <input id="q" type="search" placeholder="Buscar sticker o especie…" autocomplete="off">
+  <div class="chiprow" id="filters">
+    <button class="chip on" data-f="all">Todos</button><button class="chip" data-f="pend">Pendientes</button>
+    <button class="chip" data-f="mes">Este mes</button><button class="chip" data-f="hoy">Hoy</button>
+  </div>
+  <ul id="list" class="list"></ul>
+  <p id="empty" class="empty" hidden>Aún no hay podas registradas.<br>Toque <b>➕ Nuevo</b> para empezar.</p>
+</section>
+
+<!-- FORMULARIO -->
+<section id="v-form" class="view" hidden>
+<form id="form" novalidate autocomplete="off">
+  <div class="fhead"><h2 id="formTitle">Nueva poda</h2><span id="formNum" class="mono"></span></div>
+
+  <div class="card">
+    <label class="lbl">Sticker *</label>
+    <input name="sticker" class="big" inputmode="numeric" autocapitalize="characters" placeholder="Número del sticker">
+    <p id="dupInfo" class="hint" hidden></p>
+  </div>
+
+  <div class="card">
+    <label class="lbl">Foto ANTES *</label>
+    <div class="slot" id="slot-antes">
+      <div class="img" role="button" tabindex="0"><span class="ph">📷<b>Tomar foto ANTES</b></span></div>
+      <div class="srow"><span class="state"></span><button type="button" class="link galbtn">Galería</button><button type="button" class="link del danger">Quitar</button></div>
+      <input id="cam-antes" type="file" accept="image/*" capture="environment" hidden><input id="gal-antes" type="file" accept="image/*" hidden>
+    </div>
+  </div>
+
+  <div class="card">
+    <label class="lbl">Nombre común</label>
+    <input name="nombreComun" list="dlComun" placeholder="ej. Mango">
+    <button type="button" id="btnSci" class="link">+ Nombre científico (opcional)</button>
+    <div id="sciBox" hidden><input name="nombreCientifico" list="dlSci" placeholder="Nombre científico"></div>
+
+    <label class="lbl">Estado</label>
+    <input type="hidden" name="estado">
+    <div class="chips" data-f="estado"><button type="button" class="chip" data-v="Bueno">Bueno</button><button type="button" class="chip" data-v="Regular">Regular</button><button type="button" class="chip" data-v="Malo">Malo</button><button type="button" class="chip" data-v="Muerto">Muerto</button></div>
+
+    <div class="g2">
+      <div><label class="lbl">CAP (cm)</label><input name="cap" inputmode="decimal" placeholder="0"></div>
+      <div><label class="lbl">Altura (m)</label><input name="altura" inputmode="decimal" placeholder="0"></div>
+    </div>
+
+    <label class="lbl">Costado de luminaria</label>
+    <input type="hidden" name="costado">
+    <div class="chips" data-f="costado"><button type="button" class="chip" data-v="Izquierdo">Izquierdo</button><button type="button" class="chip" data-v="Derecho">Derecho</button><button type="button" class="chip" data-v="Frontal">Frontal</button><button type="button" class="chip" data-v="Posterior">Posterior</button></div>
+
+    <label class="lbl">Número de cortes</label>
+    <div class="stepper"><button type="button" id="minus" class="btn">−</button><input name="cortes" inputmode="numeric" placeholder="0"><button type="button" id="plus" class="btn">+</button></div>
+  </div>
+
+  <div class="card">
+    <label class="lbl">Foto DESPUÉS</label>
+    <div class="slot" id="slot-despues">
+      <div class="img" role="button" tabindex="0"><span class="ph">📷<b>Tomar foto DESPUÉS</b></span></div>
+      <div class="srow"><span class="state"></span><button type="button" class="link galbtn">Galería</button><button type="button" class="link del danger">Quitar</button></div>
+      <input id="cam-despues" type="file" accept="image/*" capture="environment" hidden><input id="gal-despues" type="file" accept="image/*" hidden>
+    </div>
+    <p class="hint">Puede guardar con la foto ANTES y agregar la DESPUÉS al terminar la poda (abra el registro desde la lista).</p>
+  </div>
+
+  <div class="card">
+    <label class="lbl">Observaciones (opcional)</label>
+    <textarea name="obs" rows="2"></textarea>
+    <div class="coord"><span id="coordInfo"></span><button type="button" id="btnGps" class="link">Repetir</button></div>
+  </div>
+
+  <div class="actions">
+    <button type="submit" id="btnSave" class="btn primary big">Guardar</button>
+    <button type="button" id="btnCancel" class="btn">Cancelar</button>
+    <button type="button" id="btnDelete" class="btn danger" hidden>Eliminar</button>
+  </div>
+</form>
+</section>
+
+<!-- EXPORTAR -->
+<section id="v-export" class="view" hidden>
+  <h2>Exportar</h2>
+  <div class="card">
+    <div class="g2">
+      <div><label class="lbl">Mes</label><select id="expMes"></select></div>
+      <div><label class="lbl">Cuadrilla</label><select id="expCuad"></select></div>
+    </div>
+    <p id="expInfo" class="info2"></p>
+  </div>
+  <button class="btn primary big" data-exp="xlsx">📊 Excel con fotos<small>Fotos ANTES y DESPUÉS visibles en cada fila + hoja Resumen</small></button>
+  <button class="btn big" data-exp="zip">🗂️ Fotos originales (ZIP)<small>Fotos en tamaño completo, nombradas por sticker</small></button>
+  <p id="expStatus" class="hint center"></p>
+  <div id="exportLog" class="log"></div>
+  <p class="hint">Exportar no borra nada. Los archivos quedan en <b>Descargas</b>; con «Compartir» los envía por WhatsApp o correo cuando tenga señal.</p>
+</section>
+
+<!-- RESPALDO -->
+<section id="v-backup" class="view" hidden>
+  <h2>Copia y cuadrillas</h2>
+  <div class="card">
+    <p id="lastBackup" class="hint"></p>
+    <button id="btnBackup" class="btn primary big">💾 Crear copia / enviar al supervisor</button>
+    <p class="hint">Haga una copia al final de cada jornada y guárdela fuera del celular o envíela al supervisor.</p>
+    <label class="btn big filebtn">🔗 Unir copias de cuadrillas<small>Restaura o junta el trabajo de varios celulares</small><input id="restoreIn" type="file" accept=".zip,application/zip" multiple hidden></label>
+    <p class="hint">Unir no borra nada: agrega lo que falta. Luego exporte un solo Excel con todas las cuadrillas.</p>
+  </div>
+  <h2>Esta cuadrilla</h2>
+  <div class="card">
+    <label class="lbl">Nombre de la cuadrilla</label><input id="setCuad" maxlength="20">
+    <label class="lbl">Responsable</label><input id="setResp">
+    <button id="btnSaveSet" class="btn small">Guardar</button>
+  </div>
+  <h2>Celular</h2>
+  <div class="card"><p id="storageInfo" class="hint"></p><button id="btnPersist" class="btn small">Proteger datos</button><p id="offlineInfo" class="hint"></p></div>
+  <h2>Papelera</h2>
+  <div class="card"><ul id="trash" class="list"></ul></div>
+  <p id="version" class="hint center"></p>
+</section>
+</main>
+
+<nav class="tabs">
+  <button data-view="list" class="on">📋<span>Registros</span></button>
+  <button data-view="form">➕<span>Nuevo</span></button>
+  <button data-view="export">📊<span>Exportar</span></button>
+  <button data-view="backup">💾<span>Copia</span></button>
+</nav>
+
+<dialog id="dlg"><form method="dialog"><h3 id="dlgTitle"></h3><div id="dlgBody"></div><div id="dlgBtns" class="dlgbtns"></div></form></dialog>
+<div id="toast" class="toast" hidden></div>
+<datalist id="dlComun"></datalist><datalist id="dlSci"></datalist>
+<script src="podas-app.js"></script>
+</body>
+</html>
